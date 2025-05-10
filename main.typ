@@ -41,6 +41,8 @@
 // Всё, хватит с нас чиселок
 #show heading: set heading(numbering: none)
 
+#include "./parts/conclusion.typ"
+
 #bibliography(title: upper("Список литературы"), "common/external.bib", style: "gost-r-705-2008-numeric")
 
 #include "./parts/appendix.typ"
