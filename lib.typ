@@ -14,6 +14,9 @@
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.8": codly-languages
 #import "@preview/outrageous:0.4.0"
+#import "@preview/ctheorems:1.1.3": *
+#show: thmrules
+
 
 #let to-string(it) = {
   if type(it) == str {
@@ -51,6 +54,14 @@
   ),
   body,
 ) = {
+  show figure: it => {
+    if (it.kind == "thmenv") {
+        show figure.caption: it => {}
+        set text(hyphenate: true)
+        align(left, it)
+    } else { align(center, it) }
+  }
+
   let get-supplement(it) = {
     if it.func() == image {
       [Рисунок]
@@ -189,6 +200,9 @@
     }
   }
 
+  
+
+  
 
   outline(title: upper("Содержание"), indent: 1.5em, depth: 2)
 
@@ -232,3 +246,16 @@
 }
 
 #let note(body) = highlight(body, stroke: fuchsia)
+
+
+#let definition = thmbox(
+    "определение",
+    "Определение",
+    inset: 0em,
+    base_level: 1,
+    padding: (top: 0em, bottom: 0em),
+    namefmt: x => [#strong(x)],
+    titlefmt: x => strong(x + "."),
+    separator: [#h(0.4em)--- ]
+  )
+}
