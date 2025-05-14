@@ -45,6 +45,15 @@
   note    = {Репозиторий библиотеки fused-effects}
 }
 
+@online{having-an-effect,
+  title   = {Having an Effect},
+  year    = {2017},
+  url     = {https://okmij.org/ftp/Computation/having-effect.html},
+  urldate = {2025-05-09},
+  note    = {}
+}
+
+
 @inproceedings{fusion_for_free,
   author = {Wu, Nicolas and Schrijvers, Tom},
   year = {2015},
@@ -54,4 +63,96 @@
   volume = {9129},
   isbn = {978-3-319-19796-8},
   doi = {10.1007/978-3-319-19797-5_15}
+}
+
+@article{MonadicDC,
+  author = {Dybvig, R. and Peyton Jones, Simon and Sabry, Amr},
+  year = {2007},
+  month = {11},
+  pages = {687-730},
+  title = {A monadic framework for delimited continuations},
+  volume = {17},
+  journal = {J. Funct. Program.},
+  doi = {10.1017/S0956796807006259}
+}
+
+@InProceedings{structured_handling_of_scoped_effects,
+  author="Yang, Zhixuan
+  and Paviotti, Marco
+  and Wu, Nicolas
+  and van den Berg, Birthe
+  and Schrijvers, Tom",
+  editor="Sergey, Ilya",
+  title="Structured Handling of Scoped Effects",
+  booktitle="Programming Languages and Systems",
+  year="2022",
+  publisher="Springer International Publishing",
+  address="Cham",
+  pages="462--491",
+  abstract="Algebraic effects offer a versatile framework that covers a wide variety of effects. However, the family of operations that delimit scopes are not algebraic and are usually modelled as handlers, thus preventing them from being used freely in conjunction with algebraic operations. Although proposals for scoped operations exist, they are either ad-hoc and unprincipled, or too inconvenient for practical programming. This paper provides the best of both worlds: a theoretically-founded model of scoped effects that is convenient for implementation and reasoning. Our new model is based on an adjunction between a locally finitely presentable category and a category of functorial algebras. Using comparison functors between adjunctions, we show that our new model, an existing indexed model, and a third approach that simulates scoped operations in terms of algebraic ones have equal expressivity for handling scoped operations. We consider our new model to be the sweet spot between ease of implementation and structuredness. Additionally, our approach automatically induces fusion laws of handlers of scoped effects, which are useful for reasoning and optimisation.",
+  isbn="978-3-030-99336-8"
+}
+
+@article{latent_effects,
+  author       = {Birthe van den Berg and
+                  Tom Schrijvers and
+                  Casper Bach Poulsen and
+                  Nicolas Wu},
+  title        = {Latent Effects for Reusable Language Components: Extended Version},
+  journal      = {CoRR},
+  volume       = {abs/2108.11155},
+  year         = {2021},
+  url          = {https://arxiv.org/abs/2108.11155},
+  eprinttype    = {arXiv},
+  eprint       = {2108.11155},
+  timestamp    = {Thu, 23 Dec 2021 10:30:13 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2108-11155.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{parallel_effects,
+  author       = {Ningning Xie and
+                  Daniel D. Johnson and
+                  Dougal Maclaurin and
+                  Adam Paszke},
+  title        = {Parallel Algebraic Effect Handlers},
+  journal      = {CoRR},
+  volume       = {abs/2110.07493},
+  year         = {2021},
+  url          = {https://arxiv.org/abs/2110.07493},
+  eprinttype    = {arXiv},
+  eprint       = {2110.07493},
+  timestamp    = {Mon, 25 Oct 2021 07:55:55 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2110-07493.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@unknown{framework_for_higher_order_effects_and_handlers,
+  author = {van den Berg, Birthe and Schrijvers, Tom},
+  year = {2023},
+  month = {02},
+  pages = {},
+  title = {A Framework for Higher-Order Effects & Handlers},
+  doi = {10.48550/arXiv.2302.01415}
+}
+
+@article{on_expressive_power,
+  author = {Forster, Yannick and Kammar, Ohad and Lindley, Sam and Pretnar, Matija},
+  year = {2016},
+  month = {10},
+  pages = {},
+  title = {On the Expressive Power of User-Defined Effects: Effect Handlers, Monadic Reflection, Delimited Control},
+  volume = {1},
+  journal = {Proceedings of the ACM on Programming Languages},
+  doi = {10.1145/3110257}
+}
+
+@inbook{understanding_handlers_via_DC_operations,
+  author = {Cong, Youyou and Asai, Kenichi},
+  year = {2023},
+  month = {01},
+  pages = {59-79},
+  title = {Understanding Algebraic Effect Handlers via Delimited Control Operators},
+  isbn = {978-3-031-21313-7},
+  doi = {10.1007/978-3-031-21314-4_4}
 }

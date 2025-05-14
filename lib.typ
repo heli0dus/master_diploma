@@ -245,7 +245,7 @@
   h(0.1em)
 }
 
-#let note(body) = highlight(body, stroke: fuchsia)
+#let note(body) = highlight(body, stroke: fuchsia, fill: lime)
 
 
 #let definition = thmbox(
