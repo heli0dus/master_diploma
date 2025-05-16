@@ -17,6 +17,7 @@
 #import "@preview/ctheorems:1.1.3": *
 #show: thmrules
 
+#codly(languages: codly-languages)
 
 #let to-string(it) = {
   if type(it) == str {
