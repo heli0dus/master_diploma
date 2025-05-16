@@ -2,7 +2,7 @@
 #show: appendix
 
 
-= Тест листинга <app:A>
+= Листинг реализации эффектов высшего порядка на Racket <app:A>
 
 #show figure: set block(breakable: true)
 #figure([
