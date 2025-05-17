@@ -259,4 +259,6 @@
     titlefmt: x => strong(x + "."),
     separator: [#h(0.4em)--- ]
   )
+
+#let accentBox = thmbox("", "", fill: rgb("#eeffee"), separator: []).with(numbering: none)
 }
