@@ -43,6 +43,6 @@
 
 #include "./parts/conclusion.typ"
 
-#bibliography(title: upper("Список литературы"), "common/external.bib", style: "gost-r-705-2008-numeric")
+#bibliography(title: upper("Список использованных источников"), "common/external.bib", style: "gost-r-705-2008-numeric")
 
 #include "./parts/appendix.typ"
