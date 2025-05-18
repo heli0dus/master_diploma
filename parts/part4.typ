@@ -8,8 +8,6 @@
 
 Важное замечание. В дальнейшем описании примеры представлены в синтаксисе, описываемом в ходе этой работы. Синтаксис реального эмбеддинга в язык Haskell выгляди иначе, но операции остаются теми же.
 
-#note[Наверное стоит пощадить людей и писать в синтаксисе который был всю дорогу а не светить нашим "красивым" эмбеддингом?]
-
 == Базовые примеры
 
 Предварительно для реализации тестовых программ стандартная библиотека языка была расширена дополнительными операциями для работы со списками, представленными списками Чёрча, с целью написания более вариативных программ. Также в стандартной библиотеке была исправлена ошибка и в качестве оператора `fix` вместо `Y`-комбинатора был реализован `Z`-комбинатор для добавления возможности написания общерекурсивных функций.
@@ -18,20 +16,20 @@
 
 #figure(
   ```
-  withHandler {
+  handle #op with [
     return x -> x
-    op() k -> 1
-    #op} 
-  withHandler {
+    op() k -> 1]
+  in 
+  handle #b with [
     return x -> x
     b() k -> embed(k
-      do(#op, op))
-    #b }
-  withHandler {
+      do(#op, op))]
+  in 
+  handle #op with [
     return x -> x
-    op() k -> 2
-    #op}
-  {do(#b, b)}
+    op() k -> 2]
+  in
+  do(b) to #b
 
   //Ожидаемый результат - 2
   ```
@@ -44,25 +42,25 @@
   ```
   withStdLib {
   
-  catch = (scope) => (hdl) => do(#catch, catch, scope, hdl)
-  throw = (err) => do(#error, throw, err)
+  def catch(scope, hdl) = do(catch, scope, hdl) to #catch
+  def throw(err) = do(throw, err) to #catch
 
-  result =
-    withHandler {
+  def result =
+    handle #error with [
       return x -> inr(x)
-      throw(e) k -> inl(e)
-      #error} (
-    withHandler {
+      throw(e) k -> inl(e)] 
+    in
+    handle #catch with [
       return x -> x
       catch(scope, hdl) k -> embed(k,
-        {withHandler {
+        {handle #error with [
           return x -> x
-          throw(e) k -> hdl(e)
-          #error}
+          throw(e) k -> hdl(e)]
+        in
         scope()}
-        ) 
-      #catch }
-  {catch (() => throw(1)), ((e) => 41 + e))}
+        )]
+    in 
+      catch(() => throw(1)), ((e) => 41 + e))
 
   case(result)
     inl _ -> 0
@@ -85,17 +83,17 @@
 #figure(
   ```
   withStdLib {
-  withCatch = fix((rec) => (comp) =>
-     withHandler
-      return x --> inr(x)
-      throw(e) k --> inl(e)
-      catch(comp, hdl), k --> embed(k,
+  def withCatch = fix((rec) => (comp) =>
+    handle #catch with [
+      return x -> inr(x)
+      throw(e) k -> inl(e)
+      catch(comp, hdl), k -> embed(k,
           case (rec(comp))
             inl err -> do(#catch, abort, (() => embed(k, hdl(err))))
             inr x   -> x
       )
-      abort(m) _ --> m()
-      \#catch
+      abort(m) _ --> m()]
+    in
       comp()
   );
   case(
@@ -107,45 +105,85 @@
   }
   -- Ожидаемый результат - 42
   ```
-  , caption: [Пример программы с взаимодействующим эффектов обработки исключений]
+  , caption: [Пример программы с взаимодействующим эффектом обработки исключений]
 ) <listing:transactional_catch_impl>
 #show figure: set block(breakable: false)
 
 
 2. Конкурентность с разделением глобального и локального состояния хендлеров для корутин.
 
-// #figure(
-//   ```
-//   hSchedule = {(scope) =>
-//     withState("taskQueue", nil) 
-//     withHandler {
-//         return x -> x
-//         fork(arg) k ->
-//             q = get("taskQueue");
-//             put("taskQueue", cons(k, q));
-//             embed(k,
-//             {arg(); do(#schedule, finish)})
-//         yield() k ->
-//             q = get("taskQueue")
-//             if (listIsEmpty(q))
-//                 k(unit)
-//             else {
-//               nq = listSplitLast(q);
-//               put("taskQueue", cons(k, nq.2));
-//               nq.1(unit)
-//             }
-//         finish() k -> 
-//             q = get("taskQueue")
-//             if (listIsEmpty(q))
-//                 unit
-//             else {
-//               nq = listSplitLast(q);
-//               put("taskQueue", nq.2);
-//               nq.1(unit)
-//             }
-//         #schedule
-//         }
-//     scope()}
-//   ```
-//   , caption: [Пример программы с взаимодействующим эффектов обработки исключений]
-// )
+  Другим реализованным механизмом взаимодействия является контроль над локальностью хендлеров для корутин. При таком взаимодействии хендлеры, вызванные после хендлера многопоточности, будут иметь локальное состояние для каждого вычисления внутри `fork`. Например на @listing:actors[листинге] представлен пример, в котором эффект состояния локальный дял каждого выделенного потока и вызовы эффекта `put` не влияют на состояние в основном потоке, а на @listing:global_state_coroutines[листинге] состояние глобальное и его изменение внутри второго потока будут видны в основном потоке.
+
+#figure(
+  ```
+  withStdLib {
+  withSchedule {
+  withState("x", 0) {
+    z = get("x");
+    put("x", z + 1);
+    fork({
+        z2 = get("x");
+        put("x", z2 + 1)});
+    put("x", get("x") + 1);
+    get("x")
+  }}}
+  -- Ожидаемый результат - 2
+  ```
+  , caption: [Пример корутин с локальными состояниями]
+) <listing:actors>
+
+#figure(
+  ```
+  withStdLib {
+  withState("x", 0) {
+  withSchedule {
+    z = get("x");
+    put("x", z + 1);
+    fork({
+        z2 = get("x");
+        put("x", z2 + 1)});
+    put("x", get("x") + 1);
+    get("x")
+  }}}
+  -- Ожидаемый результат - 3
+  ```
+  , caption: [Пример корутин с общим глобальным состоянием]
+) <listing:global_state_coroutines>
+
+Хендлер, достигающий такого поведения при помощи сохранения продолжений, за счёт этого он поддерживает состояния хендлеров, определённых после хендлера многопоточности внутри корутин локально. Реализация такого хендлера представлена на @listing:interacting_coroutines_handler[листинге].
+
+#figure(
+  ```
+  def hSchedule(scope) = 
+    withState("taskQueue", nil) {
+    handle #schedule with [
+      return x -> x
+      fork(arg) k ->
+          q = get("taskQueue");
+          put("taskQueue", cons(k, q));
+          embed(k,
+          {arg(); do(finish) to schedule})
+      yield() k ->
+          q = get("taskQueue")
+          if (listIsEmpty(q))
+              k(unit)
+          else {
+            nq = listSplitLast(q);
+            put("taskQueue", cons(k, nq.2));
+            nq.1(unit)
+          }
+      finish() k -> 
+          q = get("taskQueue")
+          if (listIsEmpty(q))
+              unit
+          else {
+            nq = listSplitLast(q);
+            put("taskQueue", nq.2);
+            nq.1(unit)
+          } ]
+    in
+      scope()
+    }
+  ```
+  , caption: [Хендлер для взаимодействующего эффекта исполнения корутин]
+) <listing:interacting_coroutines_handler>

@@ -10,7 +10,7 @@
   return text()[#h(1fr) #get-entry-back-references(entry).join(",")]
 }
 
-#show: template.with(start_number: 1)
+#show: template.with(start_number: 4)
 
 #register-glossary(symbols-entries)
 #register-glossary(acronym-entries)
@@ -23,8 +23,8 @@
 
 // Основн
 
-= Список сокращений и условных обозначений
-#print-glossary(acronym-entries + symbols-entries, user-print-back-references: back-refs-on-right)
+// = Список сокращений и условных обозначений
+// #print-glossary(acronym-entries + symbols-entries, user-print-back-references: back-refs-on-right)
 
 // = Термины и определения
 // #print-glossary(glossary-entries, user-print-back-references: back-refs-on-right)
